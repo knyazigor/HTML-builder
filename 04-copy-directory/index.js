@@ -7,14 +7,24 @@ const destDirPath = path.join(__dirname, 'files-copy');
 
 (async function() {
   try {
-    const files = await readdir(srcDirPath);
     await rm(destDirPath, {recursive: true, force: true});
-    await mkdir(destDirPath, {recursive: true});
-    files.forEach(async (file) => {    
-        await copyFile(path.join(srcDirPath, file), path.join(destDirPath, file), COPYFILE_FICLONE)
-    });
+    await copyDir(srcDirPath, destDirPath);
   }
   catch (err) {
     console.log(err);
   }
 })();
+
+async function copyDir(src, dest) {
+  await mkdir(dest, { recursive: true });
+  let entries = await readdir(src, { withFileTypes: true });
+
+  for (let entry of entries) {
+      let srcPath = path.join(src, entry.name);
+      let destPath = path.join(dest, entry.name);
+
+      entry.isDirectory() ?
+          await copyDir(srcPath, destPath) :
+          await copyFile(srcPath, destPath, COPYFILE_FICLONE);
+  }
+}
