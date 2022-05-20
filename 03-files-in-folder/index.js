@@ -8,9 +8,10 @@ const dirPath = path.join(__dirname, 'secret-folder');
   (await readdir(dirPath, {withFileTypes: true}))
     .filter(el => !el.isDirectory())
     .forEach(async (el) => {
-      const [ name, extension ] = el.name.split('.');
+      const name = el.name.replace(/\.[^/.]+$/, '');
+      const extension = path.extname(el.name).replace(/^\./, '');
       const filePath = path.join(dirPath, el.name);
       const { size } = await stat(filePath);
-      console.log( `${name} - ${extension} - ${(size)} bytes`)
+      console.log( `${name} - ${extension} - ${(size)} bytes`);
     })
 })();
