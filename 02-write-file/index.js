@@ -1,37 +1,28 @@
 const fs = require('fs');
-const readLine = require('readline')
+const readLine = require('node:readline');
+
 const process = require('node:process');
 
 const path = require('path').join(__dirname, 'text.txt');
-const stream = fs.createWriteStream(path, 'utf-8');
 
-let greetings = '\nWake up, Neo...\nThe Matrix has you...\nFollow the White Rabbit\n\n';
-console.log(greetings);
-
-const rl = readLine.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  prompt: 'Your answer: ',
-})
-
-rl.prompt();
-
-rl.on('line', (line) => {
-  switch (line.trim()) {
-    case 'exit': 
-      rl.close();
-      break;
-    default: 
-      stream.write(line+'\n');
-      rl.prompt();
-      break;
-  }
-}).on('close', () => {
-  stream.end();
-  stream.on('finish', () => {
+(async function () {
+  const stream = fs.createWriteStream(path, 'utf-8');
+  const rl = readLine.createInterface({ input: process.stdin, output: process.stdout, prompt: 'Your answer: ' });
+  rl.on('close', () => {
     console.log(`\nAll lines have been written to ${path}`);
-  })
-  setTimeout(() => {
+    stream.end();
     process.exit(0);
-  }, 100);
-})
+  }) 
+  rl.prompt();
+  for await (const line of rl) {
+    switch (line.trim()) {
+      case 'exit':
+        rl.close();
+        break;
+      default:        
+        stream.write(line+'\n');
+        rl.prompt();
+    }
+  }
+}
+)();
