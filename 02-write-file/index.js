@@ -35,4 +35,3 @@ rl.on('line', (line) => {
     process.exit(0);
   }, 100);
 })
-

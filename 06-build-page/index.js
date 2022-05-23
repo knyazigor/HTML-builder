@@ -30,7 +30,7 @@ const path = require('path');
   //copy assets 
   const asssetsDest = path.join(destDirPath, 'assets');
   const assetsSrc = path.join(__dirname, 'assets');
-  copyDir(assetsSrc, asssetsDest);
+  await copyDir(assetsSrc, asssetsDest);
   }
   catch (err) {
     console.log(err);
