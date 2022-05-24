@@ -1,8 +1,15 @@
 const fs = require('fs');
-const process = require('node:process');
-
 const path = require('path').join(__dirname, 'text.txt');
-const stream = fs.createReadStream(path, 'utf-8');
+const stream = new fs.ReadStream(path, {encoding: 'utf-8'});
 
-stream.on('data', (chunk) => process.stdout.write(chunk));
+stream.on('readable', () => {
+  const data = stream.read();
+  stream.destroy();
+  console.log(data);
+})
+
+
+
+
+
 
